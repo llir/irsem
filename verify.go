@@ -2,15 +2,15 @@ package irsem
 
 import (
 	"fmt"
+
 	"github.com/llir/llvm/ir"
-	"github.com/llir/llvm/ir/types"
+	"github.com/llir/llvm/ir/enum"
 )
 
 func Verify(mod *ir.Module) error {
 	for _, global := range mod.Globals {
-		_, ok := global.ContentType.(*types.PointerType)
-		if !ok {
-			return fmt.Errorf("global variables cannot use non-pointer type as content type")
+		if global.Init == nil && global.Linkage == enum.LinkageNone {
+			return fmt.Errorf("global variables without init and have no linkage")
 		}
 	}
 
